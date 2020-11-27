@@ -1,0 +1,8 @@
+{
+	"name": "altspace bell",
+	"description": "invisible collider. plays bell sound when user clicks or touches",
+	"author": "djzielin",
+	"license": "MIT",
+	"repositoryUrl": "https://github.com/djzielin/altspace-bell",
+	"optionalPermissions": ["user-interaction"]
+}
