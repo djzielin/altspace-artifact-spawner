@@ -3,21 +3,54 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
+import { Quaternion } from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
-import Button from './button';
+import ButtonWithParameter from './button_with_parameter';
 import GuiPanel from './gui_panel';
 import SpawnableItem from './spawnable_item';
 
 export default class ArtifactGui extends GuiPanel{
-	private resetButton: Button=null;
-	public receiveButton: Button=null;
+
+	private activeObjects: Map<number,MRE.Actor> = new Map();
+
 
 	constructor(protected ourApp: App) {
 		super(ourApp);
 	}
 
-	public setDoPedal(b: boolean): void {
-		//this.ourWavPlayer.doPedal=b;
+	public ButtonPressed(b: boolean, param: any): void {
+		const buttonIndex=param as number;
+		this.ourApp.ourConsole.logMessage("got button change for: " + buttonIndex + " value: " + b);
+		const item = this.ourApp.ourItems[buttonIndex];
+
+		if (b) {
+			this.ourApp.ourConsole.logMessage("spawning: " + item.name);
+
+			const rot = Quaternion.FromEulerAngles(this.ourApp.degToRad(item.rot[0]),
+				this.ourApp.degToRad(item.rot[1]),
+				this.ourApp.degToRad(item.rot[2]));
+
+			const spawnedActor = MRE.Actor.CreateFromLibrary(this.ourApp.context, {
+				resourceId: "artifact:" + item.artifact,
+				actor: {
+					name: item.name,
+					transform: {
+						local: {
+							position: { x: item.pos[0], y: item.pos[1], z: item.pos[2] },
+							rotation: rot,
+							scale: { x: item.scale, y: item.scale, z: item.scale }
+						}
+					}
+				}
+			});
+
+			this.activeObjects.set(buttonIndex,spawnedActor);
+		} else{
+			if(this.activeObjects.has(buttonIndex)){
+				this.ourApp.ourConsole.logMessage("destroying: " + item.name);
+				this.activeObjects.get(buttonIndex).destroy();
+			}
+		}
 	}
 
 	public async createAsync(pos: MRE.Vector3, name: string) {
@@ -45,10 +78,10 @@ export default class ArtifactGui extends GuiPanel{
 				xPos+=columnWidth+columnSpacing;
 			}
 
-			const pedalButton = new Button(this.ourApp);
+			const pedalButton = new ButtonWithParameter(this.ourApp, i);
 			await pedalButton.createAsync(new MRE.Vector3(xPos, 0.025, zPos),
 				this.guiBackground.id, item.name, item.name,
-				false, this.setDoPedal.bind(this));
+				false, this.ButtonPressed.bind(this));
 
 			zPos -= 0.15;
 		}

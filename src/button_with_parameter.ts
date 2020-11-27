@@ -5,11 +5,11 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
 
-interface BCallback {
-	(b: boolean): void;
+interface BCallbackParam {
+	(b: boolean, p: any): void;
 }
 
-export default class Button {
+export default class ButtonWithParameter {
 	private ourValue=true;
 	private ourLabelOn="";
 	private ourLabelOff="";
@@ -17,9 +17,9 @@ export default class Button {
 	private buttonActor: MRE.Actor=null;
 	private buttonText: MRE.Actor=null;
 	private ourHolder: MRE.Actor=null;
-	private ourCallback: BCallback;
+	private ourCallback: BCallbackParam;
 
-	constructor(private ourApp: App) {
+	constructor(private ourApp: App, private param: any) {
 	}
 
 	public show(){
@@ -52,7 +52,7 @@ export default class Button {
 	}
 
 	public async createAsync(pos: MRE.Vector3, parentId: MRE.Guid, labelOn: 
-		string, labelOff: string, ourVal: boolean, callback: (b: boolean) => any, width=0.75, height=0.1) {
+		string, labelOff: string, ourVal: boolean, callback: (b: boolean, param: any) => any, width=0.75, height=0.1) {
 		this.ourValue=ourVal;
 		this.ourLabelOn=labelOn;
 		this.ourLabelOff=labelOff;
@@ -132,7 +132,7 @@ export default class Button {
 					if (this.doVisualUpdates) {
 						this.updateDisplayValue();
 					}
-					this.ourCallback(this.ourValue);
+					this.ourCallback(this.ourValue,this.param);
 				} else{
 					this.ourApp.ourConsole.logMessage("user: " + user.name + " not authorized to click button!");
 				}
@@ -144,7 +144,7 @@ export default class Button {
 		this.updateDisplayValue();	
 
 		if(doCallback){
-			this.ourCallback(this.ourValue);
+			this.ourCallback(this.ourValue,this.param);
 		}	
 	}
 
