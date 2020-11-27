@@ -12,11 +12,9 @@ import SpawnableItem from './spawnable_item';
 export default class App {
 	public assets: MRE.AssetContainer;
 	public ourUsers: Users;
+	public ourConsole: Console = null;
 
 	public ourItems: SpawnableItem[] = [];
-	public jsonItems: any;
-
-	public ourConsole: Console = null;
 
 	public boxMesh: MRE.Mesh;
 	public sphereMesh: MRE.Mesh;
@@ -33,6 +31,8 @@ export default class App {
 	public handMesh: MRE.Mesh = null;
 	public handTexture: MRE.Texture = null;
 	public handMaterial: MRE.Material = null;
+
+	public urlString = "http://199.19.73.131:3910/music_symbols.json";
 
 	private createMeshAndMaterial(){
 		this.boxMesh = this.assets.createBoxMesh('boxMesh', 1.0, 1.0, 1.0);
@@ -84,34 +84,29 @@ export default class App {
 	constructor(public context: MRE.Context, public baseUrl: string, public baseDir: string, params: MRE.ParameterSet) {
 		this.ourConsole = new Console(this);
 		this.assets = new MRE.AssetContainer(context);
+		this.createMeshAndMaterial();
 
-		//this.ourUsers = new Users(this);
+		this.ourUsers = new Users(this);
 
 		this.context.onUserJoined(user => {
 			MRE.log.info("app", "user joined: " + user.name);
-			//this.ourUsers.userJoined(user,true);
+			this.ourUsers.userJoined(user,false);
+		});
+
+		this.context.onUserLeft(user => {
+			MRE.log.info("app", "user left: " + user.name);
+			this.ourUsers.userLeft(user);
 		});
 
 		const urlParam=params["url"];
-		let urlString = "http://199.19.73.131:3910/music_symbols.json";
 		
 		if(urlParam!==undefined){
-			urlString=urlParam as string;
-			MRE.log.info("app", "getting URL passed in as parameter: " + urlString);
+			this.urlString=urlParam as string;
+			MRE.log.info("app", "getting URL passed in as parameter: " + this.urlString);
 		}
 
 		this.context.onStarted(() => this.started());
 		this.context.onStopped(() => this.stopped());
-		
-		
-		this.loadJSON(urlString).then( () =>
-			{
-				MRE.log.info("app", "load of JSON complete");
-			}
-		);
-
-		//MRE.log.info("app","our JSON: " + this.jsonItems);
-
 	}
 
 	private stopped() {
@@ -121,8 +116,12 @@ export default class App {
 	private started() {
 		MRE.log.info("app", "started callback has begun");
 
-		const ourWavPlayerGui = new ArtifactGui(this);
-		ourWavPlayerGui.createAsync(new MRE.Vector3(0, 0.1, 0), "Artifacts");
+		this.loadJSON(this.urlString).then(() => {
+			MRE.log.info("app", "load of JSON complete");
+			const ourArtifactGui = new ArtifactGui(this);
+			ourArtifactGui.createAsync(new MRE.Vector3(0, 0.1, 0), "Artifacts");
+		}
+		);
 	}
 
 	async loadJSON(url: string) {

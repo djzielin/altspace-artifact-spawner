@@ -99,6 +99,7 @@ export default class GuiPanel {
 		
 		const backGroundMesh = this.ourApp.assets.createBoxMesh('boxMesh', bgWidth, 0.1, this.backgroundHeight);
 
+		const xPos= -0.4-(bgWidth/2.0)
 		this.guiBackground = MRE.Actor.Create(this.ourApp.context, {
 			actor: {
 				parentId: this.guiGrabber.getGUID(),
@@ -109,7 +110,7 @@ export default class GuiPanel {
 				},
 				transform: {
 					local: {
-						position: { x: -0.85, y:0.0, z: -0.25 },
+						position: { x: xPos, y:0.0, z: -0.25 },
 					}
 				}
 			}

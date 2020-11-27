@@ -5,10 +5,6 @@
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
 import App from './app';
 
-/**
- * The main class of this app. All the logic goes here.
- */
-
 interface UserProperties {
 	name: string;
 	user: MRE.User;
