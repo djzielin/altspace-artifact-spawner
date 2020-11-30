@@ -16,6 +16,11 @@ export default class GrabButton {
 
 	}
 
+	public setModeratorOnlyVisibility(){
+		this.buttonActor.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.lockButton.setModeratorOnlyVisibility();
+	}
+
 	public setPos(pos: MRE.Vector3){
 		this.buttonActor.transform.local.position=pos;
 	}

@@ -59,6 +59,9 @@ export default class Users {
 		return false;
 	}
 
+	public getModeratorsGroupMask(): MRE.GroupMask{
+		return new MRE.GroupMask(this.ourApp.context, ['moderators']);
+	}
 
 	public userJoined(user: MRE.User, createHands: boolean) {
 		MRE.log.info("app", "user joined. name: " + user.name + " id: " + user.id);
@@ -87,6 +90,7 @@ export default class Users {
 
 		if (isModerator) {
 			this.moderatorUsers.push(user.id.toString());
+			user.groups.add('moderators');
 		}
 
 		if(createHands){

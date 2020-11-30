@@ -120,6 +120,8 @@ export default class App {
 			MRE.log.info("app", "load of JSON complete");
 			const ourArtifactGui = new ArtifactGui(this);
 			ourArtifactGui.createAsync(new MRE.Vector3(0, 0.1, 0), "Artifacts");
+
+			ourArtifactGui.setModeratorOnlyVisibility(); //new magic to make visible only to elevated users
 		}
 		);
 	}

@@ -22,6 +22,12 @@ export default class Button {
 	constructor(private ourApp: App) {
 	}
 
+	public setModeratorOnlyVisibility(){
+		this.ourHolder.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.buttonActor.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.buttonText.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+	}
+
 	public show(){
 		this.ourHolder.appearance.enabled=true;
 		this.buttonActor.collider.enabled=true;	

@@ -15,6 +15,11 @@ export default class GuiPanel {
 		
 	}
 
+	public setModeratorOnlyVisibility(){
+		this.guiBackground.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.guiGrabber.setModeratorOnlyVisibility();
+	}
+
 	public getBackgroundPos(){
 		return this.guiBackground.transform.local.position;
 	}
