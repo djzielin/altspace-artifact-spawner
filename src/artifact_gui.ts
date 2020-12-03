@@ -49,6 +49,7 @@ export default class ArtifactGui extends GuiPanel{
 			if(this.activeObjects.has(buttonIndex)){
 				this.ourApp.ourConsole.logMessage("destroying: " + item.name);
 				this.activeObjects.get(buttonIndex).destroy();
+				this.activeObjects.delete(buttonIndex); //just to be cleaner
 			}
 		}
 	}
