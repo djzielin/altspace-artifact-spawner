@@ -12,8 +12,9 @@ import Button from './button';
 
 export default class ArtifactGui extends GuiPanel{
 
+	private ourButtons: ButtonWithParameter[]=[];
 	private activeObjects: Map<number,MRE.Actor> = new Map();
-
+	public resetButton: Button;
 
 	constructor(protected ourApp: App) {
 		super(ourApp);
@@ -96,13 +97,30 @@ export default class ArtifactGui extends GuiPanel{
 				false, this.ButtonPressed.bind(this));
 
 			zPos -= 0.15;
+
+			this.ourButtons.push(pedalButton);
 		}
 
-		const resetButton = new Button(this.ourApp);
-		await resetButton.createAsync(new MRE.Vector3(2, 0, 0), this.guiBackground.id, "Reset", "Reset",
+		this.resetButton = new Button(this.ourApp);
+		await this.resetButton.createAsync(new MRE.Vector3(2, 0, 0), this.guiBackground.id, "Reset", "Reset",
 			false, this.doReset.bind(this),0.45,0.45);
 
-		resetButton.setModeratorOnlyVisibility();
+		this.resetButton.setModeratorOnlyVisibility();
 		this.setModeratorOnlyVisibility(); //new magic to make visible only to elevated users
 	}
+
+	public setupInteractions(){
+		if(this.resetButton){
+			this.resetButton.setupInteractions();
+		}
+
+		for(const b of this.ourButtons){
+			b.setupInteractions();
+		}
+
+		if(this.guiGrabber){
+			this.guiGrabber.setupInteractions();
+		}
+	}
+
 }

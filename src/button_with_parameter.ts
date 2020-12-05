@@ -119,6 +119,10 @@ export default class ButtonWithParameter {
 		this.updateDisplayValue();
 
 		// Set a click handler on the button.
+		this.setupInteractions();
+	}
+
+	public setupInteractions() {
 		this.buttonActor.setBehavior(MRE.ButtonBehavior)
 			.onButton("released", (user: MRE.User) => {
 				if (this.ourApp.ourUsers.isElevated(user)) {
@@ -132,8 +136,8 @@ export default class ButtonWithParameter {
 					if (this.doVisualUpdates) {
 						this.updateDisplayValue();
 					}
-					this.ourCallback(this.ourValue,this.param);
-				} else{
+					this.ourCallback(this.ourValue, this.param);
+				} else {
 					this.ourApp.ourConsole.logMessage("user: " + user.name + " not authorized to click button!");
 				}
 			});

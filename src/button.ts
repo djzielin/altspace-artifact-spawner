@@ -124,25 +124,28 @@ export default class Button {
 
 		this.updateDisplayValue();
 
-		// Set a click handler on the button.
+		this.setupInteractions();
+	}
+
+	public setupInteractions(){
 		this.buttonActor.setBehavior(MRE.ButtonBehavior)
-			.onButton("released", (user: MRE.User) => {
-				if (this.ourApp.ourUsers.isElevated(user)) {
+		.onButton("released", (user: MRE.User) => {
+			if (this.ourApp.ourUsers.isElevated(user)) {
 
-					if (this.ourValue) {
-						this.ourValue = false;
-					} else {
-						this.ourValue = true;
-					}
-
-					if (this.doVisualUpdates) {
-						this.updateDisplayValue();
-					}
-					this.ourCallback(this.ourValue);
-				} else{
-					this.ourApp.ourConsole.logMessage("user: " + user.name + " not authorized to click button!");
+				if (this.ourValue) {
+					this.ourValue = false;
+				} else {
+					this.ourValue = true;
 				}
-			});
+
+				if (this.doVisualUpdates) {
+					this.updateDisplayValue();
+				}
+				this.ourCallback(this.ourValue);
+			} else{
+				this.ourApp.ourConsole.logMessage("user: " + user.name + " not authorized to click button!");
+			}
+		});
 	}
 
 	public setValue(val: boolean, doCallback=true){

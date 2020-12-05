@@ -15,6 +15,7 @@ export default class App {
 	public ourConsole: Console = null;
 
 	public ourItems: SpawnableItem[] = [];
+	public ourArtifactGui: ArtifactGui=null;
 
 	public boxMesh: MRE.Mesh;
 	public sphereMesh: MRE.Mesh;
@@ -91,6 +92,11 @@ export default class App {
 		this.context.onUserJoined(user => {
 			MRE.log.info("app", "user joined: " + user.name);
 			this.ourUsers.userJoined(user,false);
+			if(this.ourUsers.isElevated(user)){
+				if(this.ourArtifactGui){
+					this.ourArtifactGui.setupInteractions();
+				}
+			}
 		});
 
 		this.context.onUserLeft(user => {
@@ -118,8 +124,8 @@ export default class App {
 
 		this.loadJSON(this.urlString).then(() => {
 			MRE.log.info("app", "load of JSON complete");
-			const ourArtifactGui = new ArtifactGui(this);
-			ourArtifactGui.createAsync(new MRE.Vector3(0, 0.1, 0), "Artifacts");
+			this.ourArtifactGui = new ArtifactGui(this);
+			this.ourArtifactGui.createAsync(new MRE.Vector3(0, 0.1, 0), "Artifacts");
 		}
 		);
 	}
