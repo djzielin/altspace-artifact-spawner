@@ -23,9 +23,9 @@ export default class Button {
 	}
 
 	public setModeratorOnlyVisibility(){
-		this.ourHolder.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
-		this.buttonActor.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
-		this.buttonText.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.ourHolder.appearance.enabled=this.ourApp.ourUsers.getElevatedUsersGroupMask();		
+		this.buttonActor.appearance.enabled=this.ourApp.ourUsers.getElevatedUsersGroupMask();		
+		this.buttonText.appearance.enabled=this.ourApp.ourUsers.getElevatedUsersGroupMask();		
 	}
 
 	public show(){
@@ -127,7 +127,7 @@ export default class Button {
 		// Set a click handler on the button.
 		this.buttonActor.setBehavior(MRE.ButtonBehavior)
 			.onButton("released", (user: MRE.User) => {
-				if (this.ourApp.ourUsers.isAuthorized(user)) {
+				if (this.ourApp.ourUsers.isElevated(user)) {
 
 					if (this.ourValue) {
 						this.ourValue = false;

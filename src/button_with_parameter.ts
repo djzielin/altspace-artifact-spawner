@@ -121,7 +121,7 @@ export default class ButtonWithParameter {
 		// Set a click handler on the button.
 		this.buttonActor.setBehavior(MRE.ButtonBehavior)
 			.onButton("released", (user: MRE.User) => {
-				if (this.ourApp.ourUsers.isAuthorized(user)) {
+				if (this.ourApp.ourUsers.isElevated(user)) {
 
 					if (this.ourValue) {
 						this.ourValue = false;

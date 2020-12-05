@@ -18,12 +18,22 @@ export default class ArtifactGui extends GuiPanel{
 		super(ourApp);
 	}
 
+	private deleteSpawnedObject(buttonIndex: number){
+		if(this.activeObjects.has(buttonIndex)){
+			this.ourApp.ourConsole.logMessage("destroying: " + buttonIndex);
+			this.activeObjects.get(buttonIndex).destroy();
+			this.activeObjects.delete(buttonIndex); //just to be cleaner
+		}
+	}
+
 	public ButtonPressed(b: boolean, param: any): void {
 		const buttonIndex=param as number;
 		this.ourApp.ourConsole.logMessage("got button change for: " + buttonIndex + " value: " + b);
 		const item = this.ourApp.ourItems[buttonIndex];
 
 		if (b) {
+			this.deleteSpawnedObject(buttonIndex); //just to make sure
+
 			this.ourApp.ourConsole.logMessage("spawning: " + item.name);
 
 			const rot = Quaternion.FromEulerAngles(this.ourApp.degToRad(item.rot[0]),
@@ -46,11 +56,7 @@ export default class ArtifactGui extends GuiPanel{
 
 			this.activeObjects.set(buttonIndex,spawnedActor);
 		} else{
-			if(this.activeObjects.has(buttonIndex)){
-				this.ourApp.ourConsole.logMessage("destroying: " + item.name);
-				this.activeObjects.get(buttonIndex).destroy();
-				this.activeObjects.delete(buttonIndex); //just to be cleaner
-			}
+			this.deleteSpawnedObject(buttonIndex);
 		}
 	}
 
@@ -86,5 +92,7 @@ export default class ArtifactGui extends GuiPanel{
 
 			zPos -= 0.15;
 		}
+
+		this.setModeratorOnlyVisibility(); //new magic to make visible only to elevated users
 	}
 }

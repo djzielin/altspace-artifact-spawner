@@ -11,13 +11,13 @@ interface UserProperties {
 	userID: MRE.Guid;
 	lHand: MRE.Actor;
 	rHand: MRE.Actor;
-	isModerator: boolean;
+	isElevated: boolean;
 }
 
 export default class Users {
 
 	public allUsers: UserProperties[] = [];
-	public moderatorUsers: string[] = [];
+	public elevatedUsers: string[] = [];
 
 	constructor(private ourApp: App) {
 
@@ -34,23 +34,26 @@ export default class Users {
 		}
 	}
 
-	public isAuthorized(user: MRE.User): boolean {
+	public isElevated(user: MRE.User): boolean {
 		const ourRoles = user.properties["altspacevr-roles"];
 
 		if(!ourRoles){
 			return false;
 		}
 
-		if (ourRoles.includes("moderator") || ourRoles.includes("presenter") ||
+		/*if (ourRoles.includes("moderator") || ourRoles.includes("presenter") ||
 			ourRoles.includes("terraformer")) {
+			return true;
+		}*/
+		if (ourRoles.includes("presenter")) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public isAuthorizedString(user: string): boolean {
-		if (this.moderatorUsers.includes(user)) {
+	public isElevatedString(user: string): boolean {
+		if (this.elevatedUsers.includes(user)) {
 			//this.ourConsole.logMessage("user is moderator based on GUID");
 			return true;
 		}
@@ -59,18 +62,18 @@ export default class Users {
 		return false;
 	}
 
-	public getModeratorsGroupMask(): MRE.GroupMask{
-		return new MRE.GroupMask(this.ourApp.context, ['moderators']);
+	public getElevatedUsersGroupMask(): MRE.GroupMask{
+		return new MRE.GroupMask(this.ourApp.context, ['presenters']);
 	}
 
 	public userJoined(user: MRE.User, createHands: boolean) {
 		MRE.log.info("app", "user joined. name: " + user.name + " id: " + user.id);
 
-		let isModerator = false
+		let isElevated = false
 
-		if (this.isAuthorized(user)) {
+		if (this.isElevated(user)) {
 			MRE.log.info("app", "  user is authorized");
-			isModerator = true;
+			isElevated = true;
 		} else{
 			MRE.log.info("app", "  user is NOT authorized");
 		}
@@ -84,13 +87,13 @@ export default class Users {
 			userID: user.id,
 			rHand: rHand,
 			lHand: lHand,
-			isModerator: isModerator
+			isElevated: isElevated
 		}
 		this.allUsers.push(ourUser);
 
-		if (isModerator) {
-			this.moderatorUsers.push(user.id.toString());
-			user.groups.add('moderators');
+		if (isElevated) {
+			this.elevatedUsers.push(user.id.toString());
+			user.groups.add('presenters');
 		}
 
 		if(createHands){
@@ -122,12 +125,12 @@ export default class Users {
 			if (ourUser.userID === user.id) {				
 				this.allUsers.splice(i, 1);
 
-				if (ourUser.isModerator) {
+				if (ourUser.isElevated) {
 					const userString = user.id.toString();
 
-					const index = this.moderatorUsers.indexOf(userString);
+					const index = this.elevatedUsers.indexOf(userString);
 					if (index !== -1) {
-						this.moderatorUsers.splice(index, 1);
+						this.elevatedUsers.splice(index, 1);
 						MRE.log.info("app", "  removed user from moderator string list");
 					}
 				}

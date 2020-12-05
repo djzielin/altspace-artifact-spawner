@@ -17,7 +17,7 @@ export default class GrabButton {
 	}
 
 	public setModeratorOnlyVisibility(){
-		this.buttonActor.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.buttonActor.appearance.enabled=this.ourApp.ourUsers.getElevatedUsersGroupMask();		
 		this.lockButton.setModeratorOnlyVisibility();
 	}
 

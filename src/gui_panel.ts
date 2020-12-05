@@ -16,7 +16,7 @@ export default class GuiPanel {
 	}
 
 	public setModeratorOnlyVisibility(){
-		this.guiBackground.appearance.enabled=this.ourApp.ourUsers.getModeratorsGroupMask();		
+		this.guiBackground.appearance.enabled=this.ourApp.ourUsers.getElevatedUsersGroupMask();		
 		this.guiGrabber.setModeratorOnlyVisibility();
 	}
 
