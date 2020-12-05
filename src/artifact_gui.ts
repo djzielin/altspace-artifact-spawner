@@ -8,6 +8,7 @@ import App from './app';
 import ButtonWithParameter from './button_with_parameter';
 import GuiPanel from './gui_panel';
 import SpawnableItem from './spawnable_item';
+import Button from './button';
 
 export default class ArtifactGui extends GuiPanel{
 
@@ -24,6 +25,10 @@ export default class ArtifactGui extends GuiPanel{
 			this.activeObjects.get(buttonIndex).destroy();
 			this.activeObjects.delete(buttonIndex); //just to be cleaner
 		}
+	}
+
+	private doReset() {
+		process.exit(0);
 	}
 
 	public ButtonPressed(b: boolean, param: any): void {
@@ -93,6 +98,11 @@ export default class ArtifactGui extends GuiPanel{
 			zPos -= 0.15;
 		}
 
+		const resetButton = new Button(this.ourApp);
+		await resetButton.createAsync(new MRE.Vector3(2, 0, 0), this.guiBackground.id, "Reset", "Reset",
+			false, this.doReset.bind(this),0.45,0.45);
+
+		resetButton.setModeratorOnlyVisibility();
 		this.setModeratorOnlyVisibility(); //new magic to make visible only to elevated users
 	}
 }
